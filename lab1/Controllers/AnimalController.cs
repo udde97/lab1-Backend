@@ -1,4 +1,5 @@
-﻿using lab1.Entity;
+﻿using lab1.DTO;
+using lab1.Entity;
 using lab1.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +18,6 @@ namespace lab1.Controllers
         {
             _repo = repo;
         }
-        // GET /api/animal
         [HttpGet]
         [Route("")]
         public IActionResult GetAnimals()
@@ -26,7 +26,6 @@ namespace lab1.Controllers
             var animals = _repo.GetAll();
             return Ok(animals);
         }
-        // GET /api/animal/:id
         [HttpGet("{id}")]
         public IActionResult GetAnimalsByID(int id)
         {
@@ -54,16 +53,17 @@ namespace lab1.Controllers
                 newAnimal);
         }
         [HttpPut("{id}")]
-        public IActionResult UpdateAnimal([FromBody] Animal animal)
+        public IActionResult UpdateAnimal(int id, [FromBody] AnimalDTO animalDTO)
         {
-            Animal existing = _repo.GetByID(animal.Id);
+            Animal existing = _repo.GetByID(id);
             if (existing == null)
             {
-                return NotFound("Could not find the animal with ID " + animal.Id);
+                return NotFound("Could not find the animal with ID " + id);
             }
-            existing.Name = animal.Name;
-            existing.Type = animal.Type;
-            _repo.UpdateAnimal(existing);
+            existing.Type = animalDTO.Type;
+            existing.Id = id;
+            existing.Name = animalDTO.Name;
+            _repo.UpdateAnimal(id, animalDTO);
             return Ok(existing);
         }
 

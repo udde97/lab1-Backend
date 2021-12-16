@@ -1,4 +1,5 @@
-﻿using lab1.Entity;
+﻿using lab1.DTO;
+using lab1.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,30 @@ namespace lab1.Repository
                 Name = "fågel",
                 Type = "reptil",
 
-            }
+            },
+            new Animal
+            {
+                Id = 1,
+                Name = "koala",
+                Type = "däggdjur",
+
+            },
+
+            new Animal
+            {
+                Id = 3,
+                Name = "giraff",
+                Type = "däggdjur",
+
+            },
+
+            new Animal
+            {
+                Id = 4,
+                Name = "krokodil",
+                Type = "reptil",
+
+            },
         };
 
         public AnimalRep() { }
@@ -34,18 +58,26 @@ namespace lab1.Repository
 
         public Animal CreateAnimal(Animal animal)
         {
+            animal.Id = _animals.Max(a => a.Id) + 1;
             _animals.Add(animal);
 
             return animal;
         }
 
-        public Animal UpdateAnimal(Animal animal)
+        public Animal UpdateAnimal(int id, AnimalDTO animalDTO )
         {
-            int index = _animals.FindIndex(item => item.Id == animal.Id);
+            Animal updatedAnimal = new()
+            {
+                Type = animalDTO.Type,
+                Id = id,
+                Name = animalDTO.Name
 
-            _animals[index] = animal;
+            };
 
-            return animal;
+            int index = _animals.FindIndex(a => a.Id == id);
+            _animals[index] = updatedAnimal;
+
+            return updatedAnimal;
         }
 
         public void DeleteAnimal(int id)
